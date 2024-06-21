@@ -1,0 +1,25 @@
+{
+  "name": "@dogewallet/cli",
+  "version": "1.0.0",
+  "description": "狗狗币钱包命令行工具。",
+  "main": "index.js",
+  "scripts": {},
+  "bin": {
+    "dogewallet": "bin/dogewallet.mjs"
+  },
+  "keywords": [],
+  "author": "micty",
+  "email": "mictydeng@qq.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/doge-wallet/cli.git"
+  },
+  "dependencies": {
+    "@definejs/date": "^1.1.0",
+    "@definejs/file": "^2.0.1",
+    "@dogewallet/core": "^1.0.1",
+    "colors": "^1.4.0",
+    "commander": "^5.1.0"
+  }
+}
