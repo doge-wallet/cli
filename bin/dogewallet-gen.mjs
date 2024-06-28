@@ -31,7 +31,7 @@ let opts = program.opts();
     let list = [];
     let file = `./output/${$Date.format('yyyyMMdd-HHmmss')}.s.txt`;
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 1; i <= count; i++) {
         let { address, privateKey, mnemonic, } = generate();
 
         let item = opts.mnemonic ? mnemonic : `${address} ${privateKey} ${mnemonic}`;
@@ -43,13 +43,22 @@ let opts = program.opts();
         console.log(i, msg);
 
         list.push(item);
+
+        if (i % 10000 == 0) {
+            save(file, list);
+            list = [];
+        }
     }
 
-    File.write(file, list.join('\n'));
-    console.log(`写入文件`.bgGreen, path.resolve(file).yellow);
-
-    
-
+    save(file, list);
 
 
 })();
+
+function save(file, list) {
+    list = list.join('\n') + '\n';
+    File.append(file, list);
+    console.log(`写入文件`.bgGreen, path.resolve(file).yellow);
+
+    
+}
