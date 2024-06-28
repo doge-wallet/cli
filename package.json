@@ -1,6 +1,6 @@
 {
   "name": "@dogewallet/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "狗狗币钱包命令行工具。",
   "main": "index.js",
   "scripts": {},
