@@ -7,7 +7,7 @@ import { program, } from 'commander';
 import { fromMnemonic, } from "@dogewallet/core";
 import * as Source from './lib/Source.mjs';
 
-
+program.option('-a, --address', 'only address');
 
 program.parse();
 
@@ -17,6 +17,7 @@ let opts = program.opts();
 
 
 (function () {
+
     let file = args[0];
 
     if (!file) {
@@ -25,10 +26,15 @@ let opts = program.opts();
     }
 
 
-    if (args.length == 12) {
-        let mnemonic = args.join(' ');
-        let data = fromMnemonic(mnemonic);
-        console.log({ ...data, mnemonic, });
+    if (file.split(' ').length == 12) {
+        let mnemonic = file;
+        let { address, privateKey, publicKey, } = fromMnemonic(mnemonic);
+        if (opts.address) {
+            console.log(address);
+        }
+        else {
+            console.log({ address, privateKey, publicKey, mnemonic, });
+        }
         return;
     }
 
@@ -38,20 +44,30 @@ let opts = program.opts();
     let ext = path.extname(src);
     let name = path.basename(src, ext);
 
-    if (name.endsWith('.s')) {
-        name = path.basename(name, '.s');
+    if (name.endsWith('.source')) {
+        name = path.basename(name, '.source');
     }
-    else if (name.endsWith('.d')) {
-        name = path.basename(name, '.d');
+    else if (name.endsWith('.decrypt')) {
+        name = path.basename(name, '.decrypt');
     }
 
-    let dest = `${dir}/${name}.m${ext}`;
-
-
+    let dest = `${dir}/${name}.mnemonic${ext}`;
     let list = File.read(src);
 
+    list = list.split('\n');
 
-    list = list.split('\n').map((item, index) => {
+    
+
+    //只处理挑选出来的行号。
+    if (args.length>1) {
+        list = args.slice(1).map((no) => {
+            no = Number(no);
+            return list[no - 1]; //index 是从 0 开始的。
+        });
+    }
+
+
+    list = list.map((item, index) => {
         if (!item) { //空行
             return '';
         }
@@ -68,6 +84,11 @@ let opts = program.opts();
 
         console.log(index, msg);
        
+        //only address
+        if (opts.address) {
+            return address;
+        }
+
         return `${address} ${privateKey} ${mnemonic}`;
     });
 

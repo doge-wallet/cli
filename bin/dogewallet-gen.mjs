@@ -29,7 +29,7 @@ let opts = program.opts();
 
     
     let list = [];
-    let file = `./output/${$Date.format('yyyyMMdd-HHmmss')}.s.txt`;
+    let file = `./output/${$Date.format('yyyyMMdd-HHmmss')}.source.txt`;
 
     for (let i = 1; i <= count; i++) {
         let { address, privateKey, mnemonic, } = generate();

@@ -42,11 +42,11 @@ let opts = program.opts();
     let ext = path.extname(src);
     let name = path.basename(src, ext);
 
-    if (name.endsWith('.s')) {
-        name = path.basename(name, '.s');
+    if (name.endsWith('.source')) {
+        name = path.basename(name, '.source');
     }
 
-    let dest = `${dir}/${name}.e${ext}`;
+    let dest = `${dir}/${name}.encrypt${ext}`;
 
 
     let list = File.read(src);

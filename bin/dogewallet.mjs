@@ -11,6 +11,7 @@ program.version(pkg.version, '-v, --version');
 program.usage('<command> [options]');   //定义使用方法。
 
 //定义命令。
+program.command('make', 'make a encrypt file and address file.');
 program.command('gen', 'generate a source wallet file.');
 program.command('encrypt', 'encrypt a source file.');
 program.command('decrypt', 'decrypt a encrypted file.');

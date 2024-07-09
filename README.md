@@ -21,7 +21,7 @@ dogewallet 命令行工具，可以用来：
  - `[count]`，可选， 要生成的记录数。
     默认为 1，此时仅在控制台输出，不生成文件。 
     只有大于 1 时才生成到文件。 
-    目标文件在 `output` 目录，以当前日期和时间为主文件名，以 `.s.txt` 为结尾，如 `20240621-102241.s.txt`
+    目标文件在 `output` 目录，以当前日期和时间为主文件名，以 `.source.txt` 为结尾，如 `20240621-102241.source.txt`
 
  - `--mnemonic` 或 `-m` 是否只生成助记词，不生成地址和私钥。
     如果打开此开关，则只生成助记词（12个单词）。
@@ -87,7 +87,8 @@ crisp enjoy indicate drink park tribe under clean number slot narrow student
 
  - `dogewallet encrypt 20240621-102241.s.txt mysecretkey12345`
   
-   以密钥 `mysecretkey12345` 对文件 `20240621-102241.s.txt` 进行加密，并输出 `output/20240621-102241.e.txt` 文件。
+   以密钥 `mysecretkey12345` 对文件 `20240621-102241.source.txt` 进行加密，
+   并输出如 `output/20240621-102241.encrypt.txt` 文件。
 
 ## 3 解密文件
 使用 `dogewallet decrypt` 命令可以对加密后的钱包源文件进行解密。
@@ -104,7 +105,8 @@ crisp enjoy indicate drink park tribe under clean number slot narrow student
 
  - `dogewallet decrypt 20240621-102241.e.txt mysecretkey12345` 
   
-  以密钥 `mysecretkey12345` 对文件 `20240621-102241.s.txt` 进行解密，并输出 `output/20240621-102241.d.txt` 文件。
+  以密钥 `mysecretkey12345` 对文件 `20240621-102241.source.txt` 进行解密，
+  并输出如 `output/20240621-102241.decrypt.txt` 文件。
 
 ## 4 解析助记词
 
@@ -112,17 +114,25 @@ crisp enjoy indicate drink park tribe under clean number slot narrow student
 
 ### 4.1 用法
 
-`dogewallet mnemonic <mnemonic>|<source-file>`
+`dogewallet mnemonic <mnemonic> --address`
+`dogewallet mnemonic <source-file> [line-1] [line-2] ... [line-N] --address`
 
 参数：
 
  - `<mnemonic>` 必选，助记词，由空格隔开的 12 个单词组成。
+  
+  这 12 个单词必须由引号括起来。
+
  - `<source-file>` 必选，要进行解析和转换的钱包记录源文件名。
+ - `[line-1] ... [line-N]` 可选，解析文件时，只处理的指定的行号所对应的记录。
+ - `--address` 或 `-a` 是否只生成地址，不生成私钥、公钥等其它字段。
+    如果打开此开关，则只地址。
 
 ### 4.2 示例
 
- - `dogewallet mnemonic race person salad trust bottom kiss merit sell street jeans trick patrol`
-  解析助记词 `race person salad trust bottom kiss merit sell street jeans trick patrol`，输出对应的地址和私钥，此时仅在控制台输出，不会生成文件。
+ - `dogewallet mnemonic "race person salad trust bottom kiss merit sell street jeans trick patrol"`
+  解析助记词 `race person salad trust bottom kiss merit sell street jeans trick patrol`，输出对应的地址和私钥，
+  此时仅在控制台输出，不会生成文件。
 
   控制台输出：
   ``` js
@@ -134,5 +144,46 @@ crisp enjoy indicate drink park tribe under clean number slot narrow student
     }
   ``` 
 
- - `dogewallet mnemonic 20240621-111750.s.txt`
-  从文件 `20240621-111750.s.txt` 中进行助记词解析，输出含有地址、私钥、助记词三个字段的记录输出到文件 `20240621-111750.m.txt`。
+ - `dogewallet mnemonic --address "race person salad trust bottom kiss merit sell street jeans trick patrol"`
+  解析助记词 `race person salad trust bottom kiss merit sell street jeans trick patrol`，输出对应的地址，此时仅在控制台输出，不会生成文件。
+
+  控制台输出：
+  ``` js
+  DR7NAtjb5Kxce78aNdWYhz9JAaRof4shgw
+  ``` 
+
+ - `dogewallet mnemonic 20240621-111750.source.txt`
+  从文件 `20240621-111750.source.txt` 中进行助记词解析，
+  输出含有地址、私钥、助记词三个字段的记录到文件 `20240621-111750.mnemonic.txt`。
+
+
+ - `dogewallet mnemonic 20240621-111750.source.txt 100 200 300`
+  从文件 `20240621-111750.source.txt` 中进行助记词解析，
+  并且只处理行号为 `100`、`200`、`300` 对应的这 3 条记录。
+  输出含有地址、私钥、助记词三个字段的记录到文件 `20240621-111750.mnemonic.txt`。
+
+
+
+
+## 5 直接生成加密后的助记词和对应的地址
+
+使用 `dogewallet make` 命令可以生成指定条数的加密助记词和对应的地址。
+
+整个过程不会输出敏感的助记词到文件。
+
+### 5.1 用法
+
+`dogewallet make <count> <secret-key>`
+
+参数：
+
+ - `<count>` 必选，要生成的记录的数目。
+ - `<secret-key>` 必选，16位字符的密钥（加密时所使用的密钥）。
+
+### 5.2 示例
+
+ - `dogewallet make 100 mysecretkey12345`
+ 生成 100 条助记词记录和对应的地址记录，并以密钥 `mysecretkey12345` 对助记词记录进行加密。
+ 会输出两个文件：
+  - `output/20240621-102241.address.txt`
+  - `output/20240621-102241.encrypt.txt`
